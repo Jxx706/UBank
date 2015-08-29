@@ -27,6 +27,7 @@ object Client {
     c_phone={phone}
     where c_username={username}"""
   
+
   /**
    * Retrieves all records in table 'clients'.
    */
@@ -67,6 +68,9 @@ object Client {
         rowsInserted == 1
   }
   
+  /**
+   * Update de data associated to a client.
+   */
   def update(c: Client): Boolean = DB.withConnection { implicit connection =>
     val rowsAffected = SQL(UPDATE).on(
         "username" -> c.username, 
@@ -82,5 +86,7 @@ object Client {
   /**
    * Deletes a client identified with 'username'.
    */
-  def delete(username: String): Int = DB.withConnection { implicit connection => SQL(DELETE).on("username" -> username).executeUpdate() } 
+  def delete(username: String): Boolean = DB.withConnection { implicit connection => 
+    SQL(DELETE).on("username" -> username).executeUpdate() == 0
+    } 
 }
