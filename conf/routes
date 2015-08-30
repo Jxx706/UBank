@@ -13,29 +13,31 @@ POST    /login										controllers.Login.signin
 #Clients URLs
 GET     /clients                    				controllers.Clients.list
 
+GET     /clients/new                				controllers.Clients.newClient
+
 POST    /clients                    				controllers.Clients.create
 
-GET     /clients/:username          				controllers.Clients.details(username: String)
+GET     /clients/:id          				controllers.Clients.details(id: Int)
 
-POST    /clients/:username							controllers.Clients.update(username: String)
+POST    /clients/:id							controllers.Clients.update(id: Int)
 
-GET     /clients/:username/edit     				controllers.Clients.edit(username: String)
+GET     /clients/:id/edit     				controllers.Clients.edit(id: Int)
 
-POST    /clients/:username/delete					controllers.Clients.delete(username: String)
+POST    /clients/:id/delete					controllers.Clients.delete(id: Int)
 
 #Accounts URLs
-GET     /clients/:username/accounts     			controllers.Accounts.list(username: String)
+GET     /clients/:id/accounts     			controllers.Accounts.list(id: Int)
 
-POST    /clients/:username/accounts     			controllers.Accounts.create(username: String)
+POST    /clients/:id/accounts     			controllers.Accounts.create(id: Int)
 
-GET     /clients/:username/accounts/:acc			controllers.Accounts.details(username: String, acc: Long)
+GET     /clients/:id/accounts/:acc			controllers.Accounts.details(id: Int, acc: Int)
 
-POST    /clients/:username/accounts/:acc/delete 	controllers.Accounts.delete(username: String, acc: Long)
+POST    /clients/:id/accounts/:acc/delete 	controllers.Accounts.delete(id: Int, acc: Int)
 
 #Movements URLs
-GET     /clients/:username/accounts/:acc/movements	controllers.Movements.list(username: String, acc: Long)
+GET     /clients/:id/accounts/:acc/movements	controllers.Movements.list(id: Int, acc: Int)
 
-POST    /clients/:username/accounts/:acc/movements 	controllers.Movements.create(username: String, acc: Long)
+POST    /clients/:id/accounts/:acc/movements 	controllers.Movements.create(id: Int, acc: Int)
 
 
    

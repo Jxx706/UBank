@@ -1,0 +1,11 @@
+@* clientDetail Template File *@
+@(client: models.Client)
+
+@main(s"Detalles de Cliente") {
+	<p>
+		ID: @client.id
+		Nombre: @client.name
+		Teléfono: @client.phone
+		Dirección: @client.address
+	</p>	
+}

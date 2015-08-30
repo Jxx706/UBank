@@ -1,0 +1,26 @@
+@* clientsListing Template File *@
+@(clients: List[models.Client])
+
+@main("Clientes") {
+	<h1>Lista de clientes</h1>
+	<table>
+		<tr>
+			<td>ID</td>
+			<td>Nombre</td>
+			<td>Acciones</td>
+		</tr>
+		
+		@for(c <- clients) {
+			<tr>
+				<td>@c.id</td>
+				<td>@c.name</td>
+				<td>
+				<a href="@routes.Clients.details(c.id)"><button>Ver</button></a>
+				<form action="@routes.Clients.delete(c.id)" method="post">
+					<button type="submit">Eliminar</a>
+			    </form>
+				</td>
+			</tr>
+		}
+	</table>
+}

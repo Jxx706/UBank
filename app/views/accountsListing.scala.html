@@ -1,0 +1,24 @@
+@* accountsListing Template File *@
+@(accounts: List[models.Account])
+
+@main("Cuentas") {
+	<table>
+		<tr>
+			<td>Cuenta N°</td>
+			<td>Saldo</td>
+			<td>Acciones</td>
+		</tr>
+		@for(a <- accounts) {
+		<tr>
+			<td>@a.number</td>
+			<td>$@a.balance</td>
+			<td>
+				<a href="@routes.Accounts.details(a.clientId, a.number)">Ver detalle</a>
+				<form action="@routes.Accounts.delete(a.clientId, a.number)" method="post">
+					<button type="submit">Eliminar</a>
+			    </form> 
+			</td>
+		</tr>
+	}
+</table>
+}

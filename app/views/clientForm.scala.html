@@ -1,0 +1,18 @@
+@* clientForm Template File *@
+@(clientForm: Form[models.Client], edit: Boolean = false)
+
+@main(if(!edit) "Crear cliente" else "Editar cliente") {
+	@helper.form(action = if (!edit) routes.Clients.create else routes.Clients.update(clientForm.get.id)) {
+	
+	<input type="number" hidden value="@scala.util.Random.nextInt(99999999)" id="id" name="id"/>
+	@helper.inputText(clientForm("name"), '_label -> "Nombre") 
+	@helper.inputText(clientForm("address"), '_label -> "Dirección")
+	@helper.inputText(clientForm("phone"), '_label -> "Teléfono")
+	
+	<div class="form-actions">
+		<button type="submit">
+		@if(edit) { Editar usuario } else { Crear usuario }
+		</button>
+	</div>
+	} 
+}

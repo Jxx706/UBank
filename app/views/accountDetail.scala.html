@@ -1,0 +1,11 @@
+@* accountDetail Template File *@
+@(account: models.Account, movements: List[models.Movement])
+
+<p>
+	Cuenta Número: @account.number
+	Saldo a la fecha: @account.balance
+<p>
+
+<div>
+	@movementsListing(movements)
+</div>

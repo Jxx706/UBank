@@ -1,0 +1,17 @@
+@* movementsListing Template File *@
+@(movements: List[models.Movement])
+
+<table>
+	<tr>
+		<td>Fecha</td>
+		<td>Concepto</td>
+		<td>Monto</td>
+	</tr>
+    @for(m <- movements) {
+   		<tr>
+    		<td>@m.date</td>
+    		<td>@(if (m.concept == "debit") "Débito" else "Crédito")</td>
+    		<td>@(if (m.concept == "debit") m.value else m.value * -1)</td>
+    	</tr>
+  	}	
+</table>

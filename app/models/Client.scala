@@ -8,24 +8,24 @@ import play.api.db.DB
 /**
  * @author jesus
  */
-case class Client(username: String, password: String, name: String, address: String, phone: String)
+case class Client(id: Int, name: String, address: String, phone: String)
 
 object Client {
   //TODO Meter estos queries en application.conf
   private val SELECT_ALL = """select * from clients"""
-  private val SELECT_BY_USERNAME = "select * from clients where c_username={username}"
+  private val SELECT_BY_ID = "select * from clients where c_id={id}"
+  private val SELECT_BY_USERNAME = "select * from clients c where u_username={username}"
   private val INSERT = 
     """insert into
-       clients(c_username, c_password, c_name, c_address, c_phone) 
-       values({username}, {password}, {name}, {address}, {phone})"""
+       clients(c_id, c_name, c_address, c_phone) 
+       values({id}, {name}, {address}, {phone})"""
   private val DELETE = 
-    """delete from clients where c_username={username}"""
+    """delete from clients where c_id={id}"""
   private val UPDATE = """update clients 
-    set c_password={password},
-    c_name={name},
+    set c_name={name},
     c_address={address},
     c_phone={phone}
-    where c_username={username}"""
+    where c_id={id}"""
   
 
   /**
@@ -34,21 +34,30 @@ object Client {
   def getAll: List[Client] = DB.withConnection { implicit connection =>
     val sql = SQL(SELECT_ALL) 
     sql().map { row => 
-      Client(row[String]("c_username"),row[String]("c_password"),row[String]("c_name"),row[String]("c_address"),row[String]("c_phone")) 
+      Client(row[Int]("c_id"), row[String]("c_name"),row[String]("c_address"),row[String]("c_phone")) 
     }.toList
   }
   
   /**
-   * Retrieves the information of a client identified with 'username'.
+   * Retrieves the information of a client identified with 'id'.
    */
+  def getById(id: Int): Option[Client] = DB.withConnection { implicit connection =>
+    val sql = SQL(SELECT_BY_ID).on("id" -> id)
+    
+    sql().map { row =>
+        Client(row[Int]("c_id"),row[String]("c_name"),row[String]("c_address"),row[String]("c_phone"))
+      }.toList  match {
+        case Nil => None
+        case x :: _ => Some(x)
+      }
+    }
+  
   def getByUsername(username: String): Option[Client] = DB.withConnection { implicit connection =>
     val sql = SQL(SELECT_BY_USERNAME).on("username" -> username)
     
-    val resultList = sql().map { row =>
-        Client(row[String]("c_username"),row[String]("c_password"),row[String]("c_name"),row[String]("c_address"),row[String]("c_phone"))
-      }.toList
-      
-      resultList match {
+    sql().map { row =>
+        Client(row[Int]("c_id"),row[String]("c_name"),row[String]("c_address"),row[String]("c_phone"))
+      }.toList  match {
         case Nil => None
         case x :: _ => Some(x)
       }
@@ -59,8 +68,7 @@ object Client {
    */
   def insert(c: Client): Boolean = DB.withConnection { implicit connection => 
     val rowsInserted = SQL(INSERT).on(
-        "username" -> c.username, 
-        "password" -> c.password,
+        "id" -> c.id,
         "name" -> c.name, 
         "address" -> c.address, 
         "phone" -> c.phone).executeUpdate()
@@ -73,8 +81,7 @@ object Client {
    */
   def update(c: Client): Boolean = DB.withConnection { implicit connection =>
     val rowsAffected = SQL(UPDATE).on(
-        "username" -> c.username, 
-        "password" -> c.password,
+        "id" -> c.id, 
         "name" -> c.name, 
         "address" -> c.address, 
         "phone" -> c.phone).executeUpdate()
@@ -86,7 +93,7 @@ object Client {
   /**
    * Deletes a client identified with 'username'.
    */
-  def delete(username: String): Boolean = DB.withConnection { implicit connection => 
-    SQL(DELETE).on("username" -> username).executeUpdate() == 0
+  def delete(id: Int): Boolean = DB.withConnection { implicit connection => 
+    SQL(DELETE).on("id" -> id).executeUpdate() == 0
     } 
 }

@@ -3,38 +3,69 @@ package controllers
 import play.api._
 import play.api.mvc._
 import models.Client
-
+import play.api.data._
+import play.api.data.Forms._
 /**
  * @author jesus
  */
 object Clients extends Controller {
   
+  private val clientForm = Form(mapping(
+      "id" -> number,
+      "name" -> text,
+      "address" -> text,
+      "phone" -> text
+      )(Client.apply)(Client.unapply))
+  
   def list = Action {
-    Ok("This should retrieve a list of all clients." + Client.getAll.toString)
+    val clients = Client.getAll
+    Ok(views.html.clientsListing(clients))
   }
   
-  def create = Action {
-    val n = Client.insert(Client("jesus.martinez", "1234", "Jesús Armando", "Cajica", "3203655304"))
-    Ok("This should create a new client. #Clients inserted: " + n)
+  def newClient = Action {
+    Ok(views.html.clientForm(clientForm))
   }
   
-  def details(username: String) = Action {
-    val result = Client.getByUsername(username)
-    Ok(s"This should retrieve the details of a client identified by $username. This is the result $result")
+  def create = Action { implicit request =>
+    clientForm.bindFromRequest.fold(
+        formWithErrors => BadRequest,
+        client => {
+          Client.insert(client)
+          Redirect(routes.Clients.details(client.id))
+        }
+   )
   }
   
-  def delete(username: String) = Action {
-    val deleted = Client.delete(username)
-    Ok(s"This should redirect to the list of clients after deleting $username. Deletion successful! -> $deleted")
+  def details(id: Int) = Action {
+    Client.getById(id) match {
+      case Some(c) =>
+        Ok(views.html.clientDetail(c))
+      case None => NotFound("NOT FOUND!")
+    }
   }
   
-  def edit(username: String) = Action {
-    Ok(s"This should retrieve a form with the current information of $username available to be updated.")
+  def delete(id: Int) = Action {
+    val deleted = Client.delete(id)
+    Redirect(routes.Clients.list)
   }
   
-  def update(username: String) = Action {
-    val n = Client.update(Client("jesus.martinez", "4321", "MArtínez Vargas", "Bogotá", "8833238"))
-    Ok(s"This should update the info of $username and redirect to its details page.")
+  def edit(id: Int) = Action {
+    Client.getById(id) match {
+      case None => NotFound
+      case Some(c) =>
+        Ok(views.html.clientForm(clientForm.fill(c), true))
+    }
+    
+  }
+  
+  def update(id: Int) = Action { implicit request =>
+    clientForm.bindFromRequest.fold(
+        formWithErrors => BadRequest,
+        client => {
+           Client.update(client.copy(id = id))
+           Redirect(routes.Clients.details(id))
+          }
+        )
   }
   
 }
