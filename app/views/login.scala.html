@@ -7,14 +7,13 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-@header("")
-<form class="form-inline" action="@routes.Login.login" method="post">
+<form class="form-inline" action="@routes.Login.signin" method="post">
   <div class="form-group">
     <label for="username">Nombre de usuario</label>
     <input type="text" class="form-control" id="username" name="username" placeholder="Nombre usuario">
   </div>
   <div class="form-group">
-    <label for="password">Email</label>
+    <label for="password">Contraseña</label>
     <input type="password" class="form-control" id="password" name="password" placeholder="">
   </div>
   <button type="submit" class="btn btn-default">Iniciar sesión</button>

@@ -3,11 +3,11 @@
 
 @main("Clientes") {
 	<h1>Lista de clientes</h1>
-	<table>
+	<table class="table table-hover">
 		<tr>
-			<td>ID</td>
-			<td>Nombre</td>
-			<td>Acciones</td>
+			<th>ID</th>
+			<th>Nombre</th>
+			<th>Acciones</th>
 		</tr>
 		
 		@for(c <- clients) {
@@ -15,9 +15,9 @@
 				<td>@c.id</td>
 				<td>@c.name</td>
 				<td>
-				<a href="@routes.Clients.details(c.id)"><button>Ver</button></a>
 				<form action="@routes.Clients.delete(c.id)" method="post">
-					<button type="submit">Eliminar</a>
+					<a href="@routes.Clients.details(c.id)" role="button" class="btn btn-info"><span class="glyphicon glyphicon-eye-open"></span> Ver detalle</a>
+					<button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Eliminar</button>
 			    </form>
 				</td>
 			</tr>

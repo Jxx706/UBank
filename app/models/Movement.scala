@@ -5,19 +5,18 @@ import java.sql.Timestamp
 import anorm.SqlQuery
 import play.api.Play.current
 import play.api.db.DB
-import java.util.Calendar
+import java.util.{Date, Calendar}
 /**
  * @author jesus
  */
-case class Movement(accountNumber: Int, concept: String,  value: Float, date: Timestamp = new Timestamp(Calendar.getInstance().getTimeInMillis)) {
+case class Movement(accountNumber: Int, concept: String,  value: Double, date: Date = Calendar.getInstance().getTime) {
   require(concept == "debit" || concept == "credit")
   require(value > 0.0)
 }
 
 object Movement {
-  private val SELECT_ALL_BY_ACCOUNT = "select * from movements where a_number={number} order by m_date asc"
+  private val SELECT_ALL_BY_ACCOUNT = "select * from movements where a_number={number} order by m_date desc"
   private val INSERT = "insert into movements(a_number, m_type, m_date, m_value) values({number}, {type}, {date}, {value})"
-  private val UPDATE_ACCOUNT_BALANCE = """update accounts set a_balance=a_balance{op}{value} where a_number={number}"""
   
   
   /**
@@ -30,8 +29,8 @@ object Movement {
       Movement(
           row[Int]("a_number"), 
           row[String]("m_type"), 
-          row[String]("m_value").toFloat,
-          Timestamp.valueOf(row[String]("m_date")))
+          row[Double]("m_value"),
+          new Date(row[Long]("m_date")))
     }.toList
   }
   
@@ -42,20 +41,10 @@ object Movement {
     val rowsInserted = SQL(INSERT).on(
         "number" -> m.accountNumber, 
         "type" -> m.concept, 
-        "date" -> m.date, 
+        "date" -> m.date.getTime,
         "value" -> m.value).executeUpdate()
         
-    val op = m.concept match {
-      case "debit" => "+"
-      case "credit" => "-"
-    }
-        
-    val rowsUpdated = SQL(UPDATE_ACCOUNT_BALANCE).on(
-        "number" -> m.accountNumber,
-        "op" -> op,
-        "value" -> m.value).executeUpdate()
-        
-     rowsInserted == 1 && rowsUpdated == 1
+     rowsInserted == 1
   }
   
   //TODO Agregar métodos que hagan JOIN!!! 

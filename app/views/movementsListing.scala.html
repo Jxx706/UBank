@@ -1,17 +1,16 @@
-@* movementsListing Template File *@
 @(movements: List[models.Movement])
-
-<table>
+@import java.text.SimpleDateFormat
+<table class="table table-hover">
 	<tr>
-		<td>Fecha</td>
-		<td>Concepto</td>
-		<td>Monto</td>
+		<th>Fecha</th>
+		<th>Concepto</th>
+		<th>Monto</th>
 	</tr>
     @for(m <- movements) {
    		<tr>
-    		<td>@m.date</td>
+    		<td>@(new SimpleDateFormat("dd-MM-yyyy,  HH:mm:ss").format(m.date))</td>
     		<td>@(if (m.concept == "debit") "Débito" else "Crédito")</td>
-    		<td>@(if (m.concept == "debit") m.value else m.value * -1)</td>
+    		<td>@(if (m.concept == "debit") s"COP ${m.value}" else s"COP ${m.value * -1}")</td>
     	</tr>
   	}	
 </table>

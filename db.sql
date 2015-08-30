@@ -1,4 +1,4 @@
-
+﻿
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS clients CASCADE;
 DROP TABLE IF EXISTS accounts CASCADE;
@@ -27,6 +27,6 @@ CREATE TABLE accounts(
 CREATE TABLE movements(
  a_number integer REFERENCES accounts ON DELETE CASCADE,
  m_type varchar NOT NULL CHECK (m_type in ('debit', 'credit')),
- m_date timestamp NOT NULL,
+ m_date bigint NOT NULL,
  m_value float NOT NULL CHECK (m_value > 0.0)
 );

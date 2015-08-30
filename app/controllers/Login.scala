@@ -17,6 +17,10 @@ object Login extends Controller {
   def login = Action {
     Ok(views.html.login(loginForm))
   }
+
+  def logout = Action {
+    Redirect(routes.Login.login).withNewSession
+  }
   
   def signin = Action { implicit request =>
     loginForm.bindFromRequest.fold(
@@ -27,10 +31,11 @@ object Login extends Controller {
               user.role match {
                 case "admin" => Ok("This should redirect to admin interface")
                 case "client" => Client.getByUsername(user.username) match {
-                  case Some(client) => Ok(views.html.clientHome(client)).withSession(
-                      "clientId" -> client.id.toString, 
-                      "clientAddress" -> client.address, 
-                      "clientPhone" -> client.phone,
+                  case Some(client) => Redirect(routes.Accounts.list(client.id)).withSession(
+                      "id" -> client.id.toString,
+                      "name" -> client.name,
+                      "address" -> client.address,
+                      "phone" -> client.phone,
                       "username" -> user.username)
                   case None => NotFound
                 }

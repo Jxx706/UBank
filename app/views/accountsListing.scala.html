@@ -1,21 +1,31 @@
 @* accountsListing Template File *@
-@(accounts: List[models.Account])
+@(accounts: List[models.Account])(implicit client: models.Client, flash: Flash)
 
-@main("Cuentas") {
-	<table>
+@main("Cuentas", Some(client)) {
+@{flash.get("success") match {
+case Some(m) => { Html(s"""<div class="alert alert-success" role="alert"> $m </div>""") }
+case None => {}
+}}
+	<div class="page-header">
+		<h1><i>Mis cuentas bancarias</i> <small></small></h1>
+	</div>
+	<p class="lead">
+		Éstas son tus cuentas. Aquí podrás acceder a los movimientos, observar tu saldo actual e, inclusive, eliminar tus cuentas.
+	</p>
+	<table class="table table-hover">
 		<tr>
-			<td>Cuenta N°</td>
-			<td>Saldo</td>
-			<td>Acciones</td>
+			<th>Cuenta N°</th>
+			<th>Saldo</th>
+			<th>Acciones</th>
 		</tr>
 		@for(a <- accounts) {
 		<tr>
 			<td>@a.number</td>
-			<td>$@a.balance</td>
+			<td>COP @a.balance</td>
 			<td>
-				<a href="@routes.Accounts.details(a.clientId, a.number)">Ver detalle</a>
 				<form action="@routes.Accounts.delete(a.clientId, a.number)" method="post">
-					<button type="submit">Eliminar</a>
+					<a href="@routes.Accounts.details(a.clientId, a.number)" class="btn btn-info" role="button"><span class="glyphicon glyphicon-eye-open"></span> Ver detalle</a>
+					<button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Eliminar</button>
 			    </form> 
 			</td>
 		</tr>

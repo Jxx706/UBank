@@ -10,6 +10,8 @@ GET     /login                      				controllers.Login.login
 
 POST    /login										controllers.Login.signin
 
+POST   /logout                                     controllers.Login.logout
+
 #Clients URLs
 GET     /clients                    				controllers.Clients.list
 

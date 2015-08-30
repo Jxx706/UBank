@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, client: Option[models.Client] = None)(content: Html)
 
 <!DOCTYPE html>
 
@@ -17,8 +17,10 @@
     </head>
     <body>
     	<div>
-    	@header("")
-        @content
+    	@header(client)
+    	<div class="row">
+    	    <div class="col-md-8 col-md-offset-2">@content</div>
+    	</div>
     </body>
     <footer>
     	@footer()

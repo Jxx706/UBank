@@ -8,7 +8,7 @@ import play.api.data.Forms._
 /**
  * @author jesus
  */
-object Clients extends Controller {
+object Clients extends Controller with WithClient {
   
   private val clientForm = Form(mapping(
       "id" -> number,
@@ -17,12 +17,12 @@ object Clients extends Controller {
       "phone" -> text
       )(Client.apply)(Client.unapply))
   
-  def list = Action {
+  def list = Action { implicit request =>
     val clients = Client.getAll
     Ok(views.html.clientsListing(clients))
   }
   
-  def newClient = Action {
+  def newClient = Action { implicit request =>
     Ok(views.html.clientForm(clientForm))
   }
   
@@ -31,12 +31,12 @@ object Clients extends Controller {
         formWithErrors => BadRequest,
         client => {
           Client.insert(client)
-          Redirect(routes.Clients.details(client.id))
+          Redirect(routes.Clients.details(client.id)).flashing("success" -> "Usuario creado exitosamente.")
         }
    )
   }
   
-  def details(id: Int) = Action {
+  def details(id: Int) = Action { implicit request =>
     Client.getById(id) match {
       case Some(c) =>
         Ok(views.html.clientDetail(c))
@@ -44,12 +44,12 @@ object Clients extends Controller {
     }
   }
   
-  def delete(id: Int) = Action {
+  def delete(id: Int) = Action { implicit request =>
     val deleted = Client.delete(id)
     Redirect(routes.Clients.list)
   }
   
-  def edit(id: Int) = Action {
+  def edit(id: Int) = Action { implicit request =>
     Client.getById(id) match {
       case None => NotFound
       case Some(c) =>
@@ -63,7 +63,7 @@ object Clients extends Controller {
         formWithErrors => BadRequest,
         client => {
            Client.update(client.copy(id = id))
-           Redirect(routes.Clients.details(id))
+           Redirect(routes.Clients.details(id)).flashing("success" -> "Usuario editado exitosamente.")
           }
         )
   }

@@ -1,11 +1,26 @@
 @* clientDetail Template File *@
-@(client: models.Client)
+@(client: models.Client)(implicit flash: Flash)
 
-@main(s"Detalles de Cliente") {
-	<p>
-		ID: @client.id
-		Nombre: @client.name
-		Teléfono: @client.phone
-		Dirección: @client.address
-	</p>	
+@main(s"Detalles de Cliente", Some(client)) {
+	@{flash.get("success") match {
+		case Some(m) => { Html(s"""<div class="alert alert-success" role="alert"> $m </div>""") }
+		case None => {}
+	}}
+	<div class="page-header">
+  	<h1><i>Datos de mi cuenta</i> <small></small></h1>
+	</div>
+	<p class="lead">
+		Estos son tus datos como cliente. Para ver la información de tus cuentas, utiliza el panel de navegación ubicado en la parte superior.
+	</p>
+	<div class="well">
+		<address>
+			<h3><strong>@client.name</strong><br></h3>
+			<h4><b>Dirección:</b> @client.address<br></h4>
+			<h4><b>Teléfono:</b> @client.phone</h4>
+			<h4><b><abbr title="Identificador">ID:</abbr> @client.id</b></h4>
+		</address>
+		<br>
+		<br>
+		<a href="@routes.Clients.edit(client.id)" class="btn btn-info" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Editar</a>
+	</div>
 }
