@@ -15,6 +15,7 @@ case class User(username: String, password: String, role: String) {
 object User {
   private val SELECT_BY_USERNAME = "select * from users where u_username={username}"
   private val INSERT = "insert into users(u_username, u_password, u_role) values({username}, {password}, {role})"
+  private val DELETE = "delete from users where u_username={username}"
  
   def getByUsername(username: String): Option[User] = DB.withConnection { implicit connection =>
     val sql = SQL(SELECT_BY_USERNAME).on("username" -> username)
@@ -34,5 +35,11 @@ object User {
         "role" -> u.role).executeUpdate()
     
     rowsInserted == 1
+  }
+
+  def delete(username: String): Boolean = DB.withConnection { implicit  connection =>
+    val rowsAffected = SQL(DELETE).on("username" -> username).executeUpdate()
+
+    rowsAffected == 0
   }
 }

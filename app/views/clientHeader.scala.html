@@ -1,0 +1,14 @@
+@(client: models.Client)
+
+<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
+        <li><a href="@routes.Clients.details(client.id)"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> @client.name</a></li>
+        <li><a href="@routes.Accounts.list(client.id)"><span class="glyphicon glyphicon-usd" aria-hidden="true"></span> Mis Cuentas</a></li>
+    </ul>
+
+    <ul class="nav navbar-nav navbar-right">
+        <form action="@routes.Login.logout" method="post">
+            <li><button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Salir</button></li>
+        </form>
+    </ul>
+</div>

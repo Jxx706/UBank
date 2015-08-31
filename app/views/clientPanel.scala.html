@@ -1,0 +1,26 @@
+@(account: models.Account)
+<div class="row">
+    <form  action="@routes.Movements.create(account.clientId, account.number)" method="post">
+        <div class="col-lg-3 col-lg-offset-1">
+            <div class="input-group">
+						<span class="input-group-btn">
+							<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> Consignar</button>
+						</span>
+                <input name="concept" min="1" id="concept" value="debit" type="text" hidden>
+                <input maxlength="10" name="value" id ="value" type="number" class="form-control" placeholder="Monto...">
+            </div>
+        </div>
+    </form>
+
+    <form action="@routes.Movements.create(account.clientId, account.number)" method="post">
+        <div class="col-lg-3">
+            <div class="input-group">
+                <input maxlength="10" min="1" name="value" id="value" type="number" class="form-control" placeholder="Monto...">
+						<span class="input-group-btn">
+							<input name="concept" id="concept" value="credit" type="text" hidden>
+							<button class="btn btn-warning" type="submit">Retirar <span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span></button>
+						</span>
+            </div><!-- /input-group -->
+        </div>
+    </form>
+</div><!-- /.row -->

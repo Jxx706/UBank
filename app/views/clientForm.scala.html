@@ -1,11 +1,18 @@
 @* clientForm Template File *@
-@(clientForm: Form[models.Client], edit: Boolean = false)(implicit c: models.Client)
+@(clientForm: Form[models.Client])(implicit c: Option[models.Client])
 
-@main(if(!edit) "Crear cliente" else "Editar cliente", Some(c)) {
+@main("Editar cliente", Some(clientForm.get)) {
+
+	@if(clientForm.hasErrors) {
+		@for(e <- clientForm.errors) {
+		<div class="alert alert-danger" role="alert"> @e.message </div>
+		}
+	}
+
 	<div class="page-header">
-		<h1>@if(edit) { Editar usuario}  else { Crear usuario }</h1>
+		<h1>Editar usuario</h1>
 	</div>
-	<form action="@(if(!edit) routes.Clients.create else routes.Clients.update(clientForm.get.id))" method="post">
+	<form action="@routes.Clients.update(clientForm.get.id)" method="post">
 	
 	<input type="number" hidden value="@scala.util.Random.nextInt(99999999)" id="id" name="id"/>
 	<div class="form-group">
@@ -22,9 +29,8 @@
 		<label for="phone">Teléfono</label>
 		<input type="text" name="phone" id="phone" class="form-control" value="@clientForm.get.phone">
 	</div>
-
-		<button type="submit" class="btn btn-default">
-		@if(edit) { Editar usuario } else { Crear usuario }
-		</button>
+	<button type="submit" class="btn btn-default">
+		Editar usuario
+	</button>
 	</form>
 }

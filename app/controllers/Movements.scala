@@ -7,10 +7,13 @@ import java.util.Calendar
 import play.api.data._
 import play.api.data.Forms._
 /**
- * @author jesus
+ * @author Jesús Martínez
  */
 object Movements extends Controller {
-  private val movementForm = Form(tuple("value" -> text, "concept" -> text))
+  private val movementForm = Form(tuple(
+    "value" -> number.verifying("El monto debe ser mayor a 0", _ > 0d ),
+    "concept" -> text
+  ))
 
   def list(clientId: Int, account: Int) = Action {
     val movements = Movement.getAll(account)
@@ -19,10 +22,10 @@ object Movements extends Controller {
   
   def create(clientId: Int, accountNumber: Int) = Action { implicit request =>
     movementForm.bindFromRequest.fold(
-      formWithErrors => BadRequest,
+      formWithErrors => Redirect(routes.Accounts.details(clientId, accountNumber)).flashing("error" -> formWithErrors.error("value").get.message),
       tuple => {
         val concept = tuple._2
-        val value = tuple._1.toDouble
+        val value = tuple._1
         val account = Account.getByClientAndNumber(clientId, accountNumber).get
 
         if (concept == "credit" && (account.balance - value) < 0d) {

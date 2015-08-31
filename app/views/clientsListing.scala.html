@@ -1,8 +1,21 @@
 @* clientsListing Template File *@
-@(clients: List[models.Client])
+@(clients: List[models.Client], role: String = "")
 
-@main("Clientes") {
-	<h1>Lista de clientes</h1>
+@main("Clientes", role = role) {
+	<div class="page-header">
+		<h1><i>Clientes</i> <small></small></h1>
+	</div>
+	<p class="lead">
+		Aquí podrás interactuar con las cuentas de los clientes de UBank. Puedes ver, eliminar o crear nuevos cliente; también puedes generar reportes detallados de cada cuenta de usuario.
+
+		<br>
+		<br>
+		<a href="@routes.Clients.newClient" role="button" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Crear nuevo cliente</a>
+	</p>
+
+@if(clients.isEmpty) {
+	Aún no hay clientes.
+} else {
 	<table class="table table-hover">
 		<tr>
 			<th>ID</th>
@@ -17,10 +30,13 @@
 				<td>
 				<form action="@routes.Clients.delete(c.id)" method="post">
 					<a href="@routes.Clients.details(c.id)" role="button" class="btn btn-info"><span class="glyphicon glyphicon-eye-open"></span> Ver detalle</a>
+					<a href="@routes.Accounts.list(c.id)" role="button" class="btn btn-warning"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Ver cuentas</a>
+					<a href="@routes.Reports.newReport(c.id)" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Generar reporte</a>
 					<button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Eliminar</button>
 			    </form>
 				</td>
 			</tr>
 		}
 	</table>
+	}
 }

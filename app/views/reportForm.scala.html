@@ -1,0 +1,25 @@
+@(clientId: Int, reportForm: Form[(Int, java.util.Date, java.util.Date)])
+
+@main("Nuevo reporte", None, "admin") {
+<div class="page-header">
+    <h1>Crear reporte</h1>
+    Especifica un rango de fecha para refinar tu búsqueda.
+</div>
+<form action="@routes.Reports.reportData" method="post">
+
+    <input type="number" hidden id="client_id" name="client_id" value="@clientId">
+    <div class="form-group">
+        <label for="min_date">Fecha inicial</label>
+        <input type="date" name="min_date" id="min_date" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="max_date">Fecha final</label>
+        <input type="date" name="max_date" id="max_date" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-default">
+        Generar reporte
+    </button>
+</form>
+}

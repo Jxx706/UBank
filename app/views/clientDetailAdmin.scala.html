@@ -1,0 +1,28 @@
+@* clientDetail Template File *@
+@(client: models.Client, role: String)(implicit flash: Flash)
+
+@main(s"Detalles de Cliente", None, role) {
+@{flash.get("success") match {
+case Some(m) => { Html(s"""<div class="alert alert-success" role="alert"> $m </div>""") }
+case None => {}
+}}
+<div class="page-header">
+    <h1><i>Datos de Cliente</i> <small></small></h1>
+</div>
+<p class="lead">
+    Estos son los datos del cliente. Para ver más acciones, utiliza la opción "Gestionar Clientes" ubicada en el panel superior.
+</p>
+<div class="well">
+    <address>
+        <h3><strong>@client.name</strong><br></h3>
+        <h4><b>Dirección:</b> @client.address<br></h4>
+        <h4><b>Teléfono:</b> @client.phone</h4>
+        <h4><b><abbr title="Identificador">ID:</abbr> @client.id</b></h4>
+    </address>
+    <br>
+    <br>
+    <form action="@routes.Clients.delete(client.id)" method="post">
+        <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Eliminar</button>
+    </form>
+</div>
+}

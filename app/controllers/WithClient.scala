@@ -10,11 +10,15 @@ trait WithClient {
   implicit def client(implicit request: RequestHeader) = {
     val session = request.session
 
-    val id = session.get("id").get.toInt
-    val name = session.get("name").get
-    val address = session.get("address").get
-    val phone = session.get("phone").get
+    if (session.get("id").isEmpty)
+      None
+    else {
+      val id = session.get("id").get.toInt
+      val name = session.get("name").get
+      val address = session.get("address").get
+      val phone = session.get("phone").get
 
-    Client(id, name, address, phone)
+      Some(Client(id, name, address, phone))
+    }
   }
 }

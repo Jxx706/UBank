@@ -1,0 +1,27 @@
+@(data: List[( (List[Movement], List[Movement]), Account)], clientId: Int)
+@import java.math.BigDecimal
+@main("Reporte", None, "admin") {
+@if(data.isEmpty) {
+    No se hallaron resultados.
+} else {
+    <div class="page-header">
+        <h1>Reporte de movimientos del cliente # @clientId </h1>
+    </div>
+        <table class="table table-hover">
+            <tr>
+                <th>Cuenta #</th>
+                <th>Saldo actual</th>
+                <th>Débitos</th>
+                <th>Créditos</th>
+            </tr>
+            @for(t <- data) {
+                <tr>
+                    <td>@t._2.number</td>
+                    <td>@(new BigDecimal(t._2.balance).toPlainString)</td>
+                    <td>@t._1._1.length</td>
+                    <td>@t._1._2.length</td>
+                </tr>
+            }
+        </table>
+    }
+}

@@ -30,6 +30,8 @@ POST    /clients/:id/delete					controllers.Clients.delete(id: Int)
 #Accounts URLs
 GET     /clients/:id/accounts     			controllers.Accounts.list(id: Int)
 
+GET     /clients/:id/accounts/new           controllers.Accounts.newAccount(id: Int)
+
 POST    /clients/:id/accounts     			controllers.Accounts.create(id: Int)
 
 GET     /clients/:id/accounts/:acc			controllers.Accounts.details(id: Int, acc: Int)
@@ -40,6 +42,13 @@ POST    /clients/:id/accounts/:acc/delete 	controllers.Accounts.delete(id: Int, 
 GET     /clients/:id/accounts/:acc/movements	controllers.Movements.list(id: Int, acc: Int)
 
 POST    /clients/:id/accounts/:acc/movements 	controllers.Movements.create(id: Int, acc: Int)
+
+#Reports URLs
+GET    /reports/new                              controllers.Reports.newReport(clientId: Int)
+
+POST   /reports                                  controllers.Reports.reportData
+
+GET    /monthlyBalance                           controllers.Reports.monthlyBalanceData(client: Int, account: Int)
 
 
    

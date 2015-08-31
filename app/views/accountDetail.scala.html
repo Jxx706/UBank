@@ -1,7 +1,8 @@
 @* accountDetail Template File *@
-@(account: models.Account, movements: List[models.Movement])(implicit client: models.Client, flash: Flash)
+@(account: models.Account, movements: List[models.Movement], role: String = "")(implicit client: Option[models.Client] = None, flash: Flash)
+@import java.math.BigDecimal
 
-@main("Detalle de cuenta", Some(client)) {
+@main("Detalle de cuenta", client, role) {
 
 @{flash.get("success") match {
 	case Some(m) => { Html(s"""<div class="alert alert-success" role="alert"> $m </div>""") }
@@ -16,38 +17,12 @@ case None => {}
 	<div class="panel-heading"><b>Detalle de cuenta bancaria</b></div>
 	<div class="panel-body">
 		<b>Cuenta #:</b> @account.number<br>
-		<b>Saldo a la fecha:</b>COP @account.balance<br>
+		<b>Saldo a la fecha:</b>COP @(new BigDecimal(account.balance).toPlainString())<br>
 	</div>
 
-	<div class="row">
-			<form  action="@routes.Movements.create(account.clientId, account.number)" method="post">
-				<div class="col-lg-3 col-lg-offset-1">
-					<div class="input-group">
-						<span class="input-group-btn">
-							<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> Consignar</button>
-						</span>
-						<input name="concept" id="concept" value="debit" type="text" hidden>
-						<input name="value" id ="value" type="text" class="form-control" placeholder="Monto...">
-					</div>
-				</div>
-			</form>
-
-			<form action="@routes.Movements.create(account.clientId, account.number)" method="post">
-				<div class="col-lg-3">
-					<div class="input-group">
-						<input name="value" id="value" type="text" class="form-control" placeholder="Monto...">
-						<span class="input-group-btn">
-							<input name="concept" id="concept" value="credit" type="text" hidden>
-							<button class="btn btn-warning" type="submit">Retirar <span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span></button>
-						</span>
-					</div><!-- /input-group -->
-				</div>
-			</form>
-
-			<div class="col-lg-3 col-md-offset-2">
-				<a href="#" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Ver gráfico</a>
-			</div>
-	</div><!-- /.row -->
+	@if(client.isDefined) {
+		@clientPanel(account)
+	}
 	<br>
 
 

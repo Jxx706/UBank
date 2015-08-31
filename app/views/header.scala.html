@@ -1,10 +1,10 @@
 @* header Template File *@
-@(clientOption: Option[models.Client])
+@(clientOption: Option[models.Client], role: String = "")
 
 
 <nav class="navbar navbar-default">
   <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
+
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
@@ -17,26 +17,13 @@
       </a>
     </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-      @{clientOption match {
-        case None => {}
-        case Some(client) => {
-      Html(s""" <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-              <li><a href="@routes.Clients.details(${client.id})"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ${client.name}</a></li>
-              <li><a href="@routes.Accounts.list(${client.id})"><span class="glyphicon glyphicon-usd" aria-hidden="true"></span> Mis Cuentas</a></li>
-          </ul>
-
-          <ul class="nav navbar-nav navbar-right">
-              <form action="@routes.Login.logout" method="post">
-                  <li><button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Salir</button></li>
-              </form>
-          </ul>
-      </div>""")
-      }
+      @if(clientOption.isDefined) {
+        @clientHeader(clientOption.get)
+      } else { @if(role.nonEmpty && role == "admin") {
+        @adminHeader()
       }}
-  <!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+
+  </div>
 </nav>
 
 

@@ -1,0 +1,43 @@
+@* accountsListing Template File *@
+@(accounts: List[models.Account], clientId: Int)(implicit flash: Flash)
+@import java.math.BigDecimal
+
+@main("Cuentas", None, "admin") {
+@{flash.get("success") match {
+case Some(m) => { Html(s"""<div class="alert alert-success" role="alert"> $m </div>""") }
+case None => {}
+}}
+<div class="page-header">
+    <h1><i>Lista de cuentas del cliente # @clientId </i> <small></small></h1>
+</div>
+<p class="lead">
+    Aquí podrás consultar, crear y eliminar cuentas de este cliente.
+    <br>
+    <br>
+    <a href="@routes.Accounts.newAccount(clientId)" role="button" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Crear nueva cuenta</a>
+</p>
+
+@if(accounts.isEmpty) {
+    Este usuario no posee cuentas.
+} else {
+    <table class="table table-hover">
+        <tr>
+            <th>Cuenta N°</th>
+            <th>Saldo</th>
+            <th>Acciones</th>
+        </tr>
+        @for(a <- accounts) {
+        <tr>
+            <td>@a.number</td>
+            <td>COP @(new BigDecimal(a.balance).toPlainString)</td>
+            <td>
+                <form action="@routes.Accounts.delete(a.clientId, a.number)" method="post">
+                    <a href="@routes.Accounts.details(a.clientId, a.number)" class="btn btn-info" role="button"><span class="glyphicon glyphicon-eye-open"></span> Ver detalle</a>
+                    <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        }
+    </table>
+    }
+}

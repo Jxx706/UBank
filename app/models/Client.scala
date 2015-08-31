@@ -17,8 +17,8 @@ object Client {
   private val SELECT_BY_USERNAME = "select * from clients c where u_username={username}"
   private val INSERT = 
     """insert into
-       clients(c_id, c_name, c_address, c_phone) 
-       values({id}, {name}, {address}, {phone})"""
+       clients(u_username, c_id, c_name, c_address, c_phone)
+       values({username}, {id}, {name}, {address}, {phone})"""
   private val DELETE = 
     """delete from clients where c_id={id}"""
   private val UPDATE = """update clients 
@@ -66,8 +66,9 @@ object Client {
   /**
    * Inserts a new record in 'clients' table.
    */
-  def insert(c: Client): Boolean = DB.withConnection { implicit connection => 
+  def insert(c: Client, username: String): Boolean = DB.withConnection { implicit connection =>
     val rowsInserted = SQL(INSERT).on(
+        "username" -> username,
         "id" -> c.id,
         "name" -> c.name, 
         "address" -> c.address, 
@@ -91,9 +92,16 @@ object Client {
   
   
   /**
-   * Deletes a client identified with 'username'.
+   * Deletes a client identified with 'id'.
    */
-  def delete(id: Int): Boolean = DB.withConnection { implicit connection => 
-    SQL(DELETE).on("id" -> id).executeUpdate() == 0
-    } 
+  def delete(id: Int): Boolean = DB.withConnection { implicit connection =>
+    SQL(SELECT_BY_ID).on("id" -> id)().map { row =>
+      row[String]("c_username")
+    }.toList match {
+      case Nil => false
+      case username :: _ =>
+        SQL(DELETE).on("id" -> id).executeUpdate() == 0 &&
+        User.delete(username)
+    }
+  }
 }
